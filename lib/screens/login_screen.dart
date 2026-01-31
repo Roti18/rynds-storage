@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response.statusCode == 200 && data['success'] == true) {
         final String token = data['token'];
         
-        // Simpan token ke repository
+        // Save token to repository
         final repo = ApiFileRepository();
         await repo.setToken(token);
 
