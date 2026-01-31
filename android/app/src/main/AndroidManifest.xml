@@ -31,6 +31,12 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        
+        <!-- Background Downloader Service -->
+        <service
+            android:name="com.bbflight.background_downloader.BackgroundDownloaderService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
