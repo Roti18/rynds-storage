@@ -1,16 +1,36 @@
-# storages_fe
+# Rynds Storage
 
-A new Flutter project.
+Rynds Storage is a self-hosted multi-storage file manager application. It consists of a Flutter mobile client and a Go Fiber backend API.
+
+## Features
+
+- Support for multiple storage drives.
+- File management: upload, download, rename, copy, and delete.
+- File preview for images, videos, and PDF documents.
+- Real-time storage usage statistics.
+- Secure authentication system.
+
+## Tech Stack
+
+- Frontend: Flutter
+- Backend: Go Fiber
+- Database: File-based / Environment configuration
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+- Flutter SDK
+- Go (for backend)
+- Environment variables configured in .env
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Installation
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Clone the repository.
+2. Configure your .env file based on .env.example.
+3. Run `flutter pub get` to install dependencies.
+4. Run the application using `flutter run`.
+
+## License
+
+MIT License
