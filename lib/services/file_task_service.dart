@@ -29,7 +29,7 @@ class FileTaskService {
         (Config.requestTimeout, const Duration(seconds: 100)),
       ],
       androidConfig: [
-        (Config.forceFailPostOnBackgroundChannel, false),
+        ('forceFailPostOnBackgroundChannel', false),
       ],
     ).then((_) {
       // Request notification permissions for Android 13+
@@ -101,12 +101,14 @@ class FileTaskService {
       fileField: 'file',
       taskId: 'upload_${DateTime.now().millisecondsSinceEpoch}',
       updates: Updates.statusAndProgress,
-      notificationConfig: TaskNotificationConfig(
-        taskRunning: const TaskNotification('Uploading', '{filename}'),
-        taskComplete: const TaskNotification('Upload finished', '{filename}'),
-        taskFailed: const TaskNotification('Upload failed', '{filename}'),
-        progressBar: true,
-      ),
+    );
+
+    FileDownloader().configureNotificationForTask(
+      task,
+      running: const TaskNotification('Uploading', '{filename}'),
+      complete: const TaskNotification('Upload finished', '{filename}'),
+      error: const TaskNotification('Upload failed', '{filename}'),
+      progressBar: true,
     );
 
     _taskProvider.addTask(AppTask(
@@ -136,13 +138,15 @@ class FileTaskService {
       taskId: 'download_${DateTime.now().millisecondsSinceEpoch}',
       updates: Updates.statusAndProgress,
       allowPause: true,
-      notificationConfig: TaskNotificationConfig(
-        taskRunning: const TaskNotification('Downloading', '{filename}'),
-        taskComplete: const TaskNotification('Download finished', '{filename}'),
-        taskFailed: const TaskNotification('Download failed', '{filename}'),
-        taskPaused: const TaskNotification('Paused', '{filename}'),
-        progressBar: true,
-      ),
+    );
+
+    FileDownloader().configureNotificationForTask(
+      task,
+      running: const TaskNotification('Downloading', '{filename}'),
+      complete: const TaskNotification('Download finished', '{filename}'),
+      error: const TaskNotification('Download failed', '{filename}'),
+      paused: const TaskNotification('Paused', '{filename}'),
+      progressBar: true,
     );
 
     _taskProvider.addTask(AppTask(
@@ -171,12 +175,14 @@ class FileTaskService {
       taskId: 'open_${DateTime.now().millisecondsSinceEpoch}',
       group: 'opening',
       updates: Updates.statusAndProgress,
-      notificationConfig: TaskNotificationConfig(
-        taskRunning: const TaskNotification('Preparing file', '{filename}'),
-        taskComplete: const TaskNotification('Ready to open', '{filename}'),
-        taskFailed: const TaskNotification('Failed to prepare', '{filename}'),
-        progressBar: true,
-      ),
+    );
+
+    FileDownloader().configureNotificationForTask(
+      task,
+      running: const TaskNotification('Preparing file', '{filename}'),
+      complete: const TaskNotification('Ready to open', '{filename}'),
+      error: const TaskNotification('Failed to prepare', '{filename}'),
+      progressBar: true,
     );
 
     // Get exact file path using manual resolver
