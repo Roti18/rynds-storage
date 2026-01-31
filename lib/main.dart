@@ -6,6 +6,9 @@ import 'config/theme.dart';
 import 'screens/file_list_screen.dart';
 import 'screens/login_screen.dart';
 import 'data/file_repository.dart';
+import 'providers/task_provider.dart';
+import 'widgets/floating_task_bar.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +29,14 @@ Future<void> main() async {
     systemNavigationBarIconBrightness: Brightness.light,
   ));
   
-  runApp(FileManagerApp(isLoggedIn: isLoggedIn));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => TaskProvider()),
+      ],
+      child: FileManagerApp(isLoggedIn: isLoggedIn),
+    ),
+  );
 }
 
 class FileManagerApp extends StatefulWidget {
@@ -57,8 +67,11 @@ class _FileManagerAppState extends State<FileManagerApp> with WidgetsBindingObse
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // If app goes to background (paused) or is inactive, we lock it
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+    // Check if there are active tasks before locking
+    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+    
+    // If app goes to background (paused) and NOT busy with file picking/uploading/etc
+    if (state == AppLifecycleState.paused && !taskProvider.hasActiveTasks && !taskProvider.isBusy) {
       debugPrint("App went to background - Locking...");
       _lockApp();
     }
@@ -86,6 +99,14 @@ class _FileManagerAppState extends State<FileManagerApp> with WidgetsBindingObse
         overscroll: false,
         physics: const BouncingScrollPhysics(), 
       ),
+      builder: (context, child) {
+        return Stack(
+          children: [
+            if (child != null) child,
+            const FloatingTaskBar(),
+          ],
+        );
+      },
       home: _isLoggedIn ? const FileListScreen() : const LoginScreen(),
     );
   }
