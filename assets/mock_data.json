@@ -1,0 +1,172 @@
+{
+  "storageInfo": {
+    "totalGB": 200,
+    "usedGB": 128
+  },
+  "root": {
+    "id": "root",
+    "name": "Storage",
+    "type": "folder",
+    "path": "/",
+    "modifiedDate": "2026-01-30T10:00:00Z",
+    "children": [
+      {
+        "id": "folder_1",
+        "name": "Work Projects",
+        "type": "folder",
+        "itemCount": 24,
+        "modifiedDate": "2026-01-28T10:30:00Z",
+        "path": "/Work Projects",
+        "children": [
+          {
+            "id": "file_1_1",
+            "name": "Q4 Report.pdf",
+            "type": "file",
+            "sizeBytes": 3145728,
+            "modifiedDate": "2026-01-28T09:15:00Z",
+            "extension": "pdf",
+            "path": "/Work Projects/Q4 Report.pdf"
+          },
+          {
+            "id": "file_1_2",
+            "name": "Client Proposal.docx",
+            "type": "file",
+            "sizeBytes": 524288,
+            "modifiedDate": "2026-01-27T14:30:00Z",
+            "extension": "docx",
+            "path": "/Work Projects/Client Proposal.docx"
+          },
+          {
+            "id": "folder_1_1",
+            "name": "Design Assets",
+            "type": "folder",
+            "itemCount": 12,
+            "modifiedDate": "2026-01-26T11:00:00Z",
+            "path": "/Work Projects/Design Assets",
+            "children": [
+              {
+                "id": "file_1_1_1",
+                "name": "Logo.svg",
+                "type": "file",
+                "sizeBytes": 45056,
+                "modifiedDate": "2026-01-26T10:45:00Z",
+                "extension": "svg",
+                "path": "/Work Projects/Design Assets/Logo.svg"
+              },
+              {
+                "id": "file_1_1_2",
+                "name": "Banner.png",
+                "type": "file",
+                "sizeBytes": 2097152,
+                "modifiedDate": "2026-01-26T10:30:00Z",
+                "extension": "png",
+                "path": "/Work Projects/Design Assets/Banner.png"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "folder_2",
+        "name": "Personal",
+        "type": "folder",
+        "itemCount": 18,
+        "modifiedDate": "2026-01-27T16:20:00Z",
+        "path": "/Personal",
+        "children": [
+          {
+            "id": "file_2_1",
+            "name": "Travel Plans.txt",
+            "type": "file",
+            "sizeBytes": 8192,
+            "modifiedDate": "2026-01-27T16:20:00Z",
+            "extension": "txt",
+            "path": "/Personal/Travel Plans.txt"
+          },
+          {
+            "id": "file_2_2",
+            "name": "Family Photo.jpg",
+            "type": "file",
+            "sizeBytes": 4194304,
+            "modifiedDate": "2026-01-25T12:00:00Z",
+            "extension": "jpg",
+            "path": "/Personal/Family Photo.jpg"
+          }
+        ]
+      },
+      {
+        "id": "folder_3",
+        "name": "Downloads",
+        "type": "folder",
+        "itemCount": 142,
+        "modifiedDate": "2026-01-29T18:45:00Z",
+        "path": "/Downloads",
+        "children": [
+          {
+            "id": "file_3_1",
+            "name": "Setup.exe",
+            "type": "file",
+            "sizeBytes": 52428800,
+            "modifiedDate": "2026-01-29T18:45:00Z",
+            "extension": "exe",
+            "path": "/Downloads/Setup.exe"
+          },
+          {
+            "id": "file_3_2",
+            "name": "Document.pdf",
+            "type": "file",
+            "sizeBytes": 1048576,
+            "modifiedDate": "2026-01-29T10:20:00Z",
+            "extension": "pdf",
+            "path": "/Downloads/Document.pdf"
+          }
+        ]
+      },
+      {
+        "id": "file_4",
+        "name": "Project Proposal.pdf",
+        "type": "file",
+        "sizeBytes": 2516582,
+        "modifiedDate": "2026-01-28T14:20:00Z",
+        "extension": "pdf",
+        "path": "/Project Proposal.pdf"
+      },
+      {
+        "id": "file_5",
+        "name": "Meeting Notes.txt",
+        "type": "file",
+        "sizeBytes": 18432,
+        "modifiedDate": "2026-01-27T11:30:00Z",
+        "extension": "txt",
+        "path": "/Meeting Notes.txt"
+      },
+      {
+        "id": "file_6",
+        "name": "Vacation Photo.jpg",
+        "type": "file",
+        "sizeBytes": 6082560,
+        "modifiedDate": "2026-01-25T09:15:00Z",
+        "extension": "jpg",
+        "path": "/Vacation Photo.jpg"
+      },
+      {
+        "id": "file_7",
+        "name": "Budget Spreadsheet.xlsx",
+        "type": "file",
+        "sizeBytes": 159744,
+        "modifiedDate": "2026-01-24T15:40:00Z",
+        "extension": "xlsx",
+        "path": "/Budget Spreadsheet.xlsx"
+      },
+      {
+        "id": "file_8",
+        "name": "Presentation.pptx",
+        "type": "file",
+        "sizeBytes": 8601600,
+        "modifiedDate": "2026-01-22T13:25:00Z",
+        "extension": "pptx",
+        "path": "/Presentation.pptx"
+      }
+    ]
+  }
+}
