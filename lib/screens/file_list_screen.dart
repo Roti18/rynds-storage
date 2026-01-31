@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart'; // clipboard
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'dart:async';
 
 import '../config/theme.dart';
 import '../config/api_config.dart';
@@ -23,6 +24,9 @@ import '../utils/formatters.dart';
 
 import 'file_preview_screen.dart';
 import 'login_screen.dart';
+import '../services/file_task_service.dart';
+import '../providers/task_provider.dart';
+import 'package:provider/provider.dart';
 
 class FileListScreen extends StatefulWidget {
   const FileListScreen({super.key});
@@ -63,6 +67,7 @@ class _FileListScreenState extends State<FileListScreen> {
   FileItem? _copiedItem;
   String? _copiedFromStorage;
   bool _isCutting = false; // logic for "copy" vs "cut" (move)
+  StreamSubscription<String>? _taskSubscription;
 
   @override
   void initState() {
@@ -70,12 +75,26 @@ class _FileListScreenState extends State<FileListScreen> {
     _checkPermissions();
     _loadData();
     _scrollController.addListener(_onScroll);
+    
+    // Initialize Task Service
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+      FileTaskService().initialize(taskProvider);
+
+      _taskSubscription = taskProvider.completionStream.listen((taskId) {
+        if (mounted) {
+          debugPrint('Task $taskId completed, refreshing list...');
+          _loadData(); 
+        }
+      });
+    });
   }
 
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _taskSubscription?.cancel();
     super.dispose();
   }
 
@@ -354,77 +373,13 @@ class _FileListScreenState extends State<FileListScreen> {
     }
 
     // Other: Download temp and open
-    await _downloadAndOpenFile(item);
+    FileTaskService().downloadAndOpenFile(_currentStorage, item);
   }
 
-  Future<void> _downloadAndOpenFile(FileItem item) async {
-    try {
-      final dio = Dio();
-      final tempDir = await getTemporaryDirectory();
-      final tempPath = '${tempDir.path}/${item.name}';
-      
-      if(mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Opening file...')));
-      
-      final url = Uri.parse(ApiConfig.download).replace(queryParameters: {
-          'storage': _currentStorage,
-          'path': item.path,
-      }).toString();
-
-      await dio.download(
-        url,
-        tempPath,
-        options: Options(headers: {'Authorization': 'Bearer ${ApiFileRepository.token}'}),
-      );
-
-      final result = await OpenFilex.open(tempPath);
-      if (result.type != ResultType.done) {
-        String msg = result.message;
-        if (result.type == ResultType.noAppToOpen) {
-          msg = 'No app found to open this file. Please install a viewer/editor from Play Store.';
-        }
-        if(mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-      }
-
-    } catch (e) {
-      debugPrint('Error opening file: $e');
-      if(mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
-    }
-  }
+  // Removed old _downloadAndOpenFile since it's now in FileTaskService
 
   Future<void> _handleDownload(FileItem item) async {
-    try {
-      // Find Downloads folder
-      Directory? downloadDir;
-      if (Platform.isAndroid) {
-        downloadDir = Directory('/storage/emulated/0/Download');
-        if (!await downloadDir.exists()) {
-          downloadDir = await getExternalStorageDirectory(); 
-        }
-      } else {
-        downloadDir = await getApplicationDocumentsDirectory();
-      }
-      
-      final savePath = '${downloadDir?.path}/${item.name}';
-      
-      final dio = Dio();
-      final url = Uri.parse(ApiConfig.download).replace(queryParameters: {
-          'storage': _currentStorage,
-          'path': item.path,
-      }).toString();
-
-      if(mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Downloading...')));
-
-      await dio.download(
-        url,
-        savePath,
-        options: Options(headers: {'Authorization': 'Bearer ${ApiFileRepository.token}'}),
-      );
-
-      if(mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Saved to $savePath')));
-
-    } catch (e) {
-       if(mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Download failed: $e')));
-    }
+    FileTaskService().downloadFile(_currentStorage, item);
   }
 
 
@@ -576,34 +531,25 @@ class _FileListScreenState extends State<FileListScreen> {
 
   Future<void> _handleUpload() async {
     try {
-      // Allow multiple pick? For now single for simplicity with backend
+      final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+      taskProvider.setBusy(true);
+
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: false, 
-        type: FileType.any, // Allow images, videos, etc.
+        type: FileType.any,
       );
+
+      taskProvider.setBusy(false);
 
       if (result != null && result.files.single.path != null) {
         File file = File(result.files.single.path!);
         
-        if (mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text('Uploading ${result.files.single.name}...')),
-           );
-        }
-
-        // Use current path as target
-        await _repository.uploadFile(_currentStorage, _currentPath, file);
-
-        if (mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(content: Text('Upload successful')),
-           );
-           _loadData(); // Refresh list
-        }
+        FileTaskService().uploadFile(_currentStorage, _currentPath, file);
+        // We don't wait for it anymore as it's backgrounded
       }
     } catch (e) {
       if (mounted) {
-         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Upload failed: $e')));
+         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Upload trigger failed: $e')));
       }
     }
   }
